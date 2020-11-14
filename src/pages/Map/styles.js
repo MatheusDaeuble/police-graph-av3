@@ -25,5 +25,16 @@ export const Container = styled.div`
 `;
 
 export const Map = styled.img`
-  height: 580px;
+  height: 800px;
 `;
+
+export const Point = styled.div`
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  border-radius: 10px;
+  left: ${({ coordinates }) => `${coordinates.x}px`};
+  bottom: ${({ coordinates }) => `${coordinates.y}px`};
+  background-color: ${({ isRoute }) => (isRoute ? 'yellow' : 'red')};
+`;
+/* background-color: ${({ isActive }) => (isActive ? 'blue' : 'red')}; */

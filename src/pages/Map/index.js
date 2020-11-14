@@ -1,23 +1,60 @@
-import React, { useState, useEffect } from 'react';
-
-import { Background, Container, Map } from './styles';
+import React, { useState } from 'react';
+import dijkstra from './dijkstra';
+import { Background, Container, Map, Point } from './styles';
 import PoliceCar from './components/PoliceCar';
-import mapImage from '~/assets/images/map.png';
+import mapImage from '~/assets/images/map.jpeg';
 
-import { createPoliceCarsArray, getRandomVertices } from './util';
+import { coordinates, STATUS } from './util';
 
 const MapPage = () => {
-  const [cars, setCars] = useState(createPoliceCarsArray(3));
-  const renderCars = () => cars.map(car => <PoliceCar car={car} />);
+  const [status, setStatus] = useState(STATUS.RUNNING);
+  const [carsData, setCarsData] = useState({});
+  const [eventRoute, setEventRoute] = useState([]);
+  const [carOnRoute, setCarOnRoute] = useState();
 
-  useEffect(() => {
-    const interval = setInterval(() => setCars(getRandomVertices(cars)), 1000);
-    return () => clearInterval(interval);
-  }, [cars]);
+  const toggleStatus = () => {
+    setStatus(status === STATUS.RUNNING ? STATUS.PAUSED : STATUS.RUNNING);
+  };
+
+  const calculateRoute = node => {
+    if (status === STATUS.RUNNING) {
+      let best;
+      Object.keys(carsData).forEach(key => {
+        const result = dijkstra(carsData[key], node);
+        if (!best || result.distance < best.distance) {
+          best = { ...result, key: Number(key) };
+        }
+      });
+      setEventRoute(best.nodes.reverse().slice(0, best.nodes.length - 1));
+      setCarOnRoute(best.key);
+    }
+    toggleStatus();
+  };
+
+  const renderPoints = () =>
+    coordinates.map((coord, i) => (
+      <Point
+        coordinates={coord}
+        isRoute={eventRoute.includes(i)}
+        onClick={() => calculateRoute(i)}
+      />
+    ));
+
+  const renderCars = () =>
+    [...Array(3)].map((_, key) => (
+      <PoliceCar
+        status={status}
+        route={eventRoute.length && carOnRoute === key ? eventRoute : []}
+        onChangeNode={node => setCarsData({ ...carsData, [key]: node })}
+        onChangeRoute={setEventRoute}
+      />
+    ));
+
   return (
     <Background>
       <Container>
         <Map src={mapImage} />
+        {renderPoints()}
         {renderCars()}
       </Container>
     </Background>
