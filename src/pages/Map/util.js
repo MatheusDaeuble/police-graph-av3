@@ -84,3 +84,5 @@ export const getRandomAdjacentNode = (node) => {
   const selected = choices[Math.floor(Math.random() * choices.length)];
   return matrixAdjacency[node].indexOf(selected);
 };
+
+export const getDistance = (from, to) => matrixAdjacency[from][to]

@@ -1,5 +1,4 @@
 import styled, { keyframes } from 'styled-components';
-import { ANIMATION_TIME } from '~/settings';
 
 const ADJUST_POSITION_CAR_Y = -10;
 const ADJUST_POSITION_CAR_X = -20;
@@ -25,9 +24,9 @@ export const CarContainer = styled.div`
   position: absolute;
   bottom: ${ADJUST_POSITION_CAR_Y}px;
   left: ${ADJUST_POSITION_CAR_X}px;
-  animation: ${({ to, from }) => carAnimation(from, to)};
+  animation: ${({ to, from }) => carAnimation(from, to)} linear;
   animation-play-state: ${({ status }) => status};
-  animation-duration: ${ANIMATION_TIME}s;
+  animation-duration: ${({ speed }) => speed.toFixed(2)}s;
   animation-fill-mode: forwards;
 `;
 

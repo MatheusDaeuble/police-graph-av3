@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
 import mapImage from '~/assets/images/map.jpeg';
-import { NUMBERS_OF_CARS } from '~/settings';
 
-import PoliceCar from './components/PoliceCar';
-import { Background, Container, Map, Point } from './styles';
+import NodesList from './components/NodesList';
+import Fleet from './components/Fleet';
+import { Background, Container, Map } from './styles';
 import dijkstra from './dijkstra';
-import { coordinates, STATUS } from './util';
+import { STATUS } from './util';
 
 const MapPage = () => {
   const [status, setStatus] = useState(STATUS.RUNNING);
@@ -33,31 +33,19 @@ const MapPage = () => {
     toggleStatus();
   };
 
-  const renderPoints = () =>
-    coordinates.map((coord, i) => (
-      <Point
-        coordinates={coord}
-        isRoute={eventRoute.includes(i)}
-        onClick={() => calculateRoute(i)}
-      />
-    ));
-
-  const renderCars = () =>
-    [...Array(NUMBERS_OF_CARS)].map((_, key) => (
-      <PoliceCar
-        status={status}
-        route={eventRoute.length && carOnRoute === key ? eventRoute : []}
-        onChangeNode={node => setCarsData({ ...carsData, [key]: node })}
-        onChangeRoute={setEventRoute}
-      />
-    ));
-
   return (
     <Background>
       <Container>
         <Map src={mapImage} />
-        {renderPoints()}
-        {renderCars()}
+        <NodesList calculateRoute={calculateRoute} eventRoute={eventRoute} />
+        <Fleet
+          status={status}
+          eventRoute={eventRoute}
+          setCarsData={setCarsData}
+          carsData={carsData}
+          setEventRoute={setEventRoute}
+          carOnRoute={carOnRoute}
+        />
       </Container>
     </Background>
   );
