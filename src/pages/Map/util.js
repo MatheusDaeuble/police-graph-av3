@@ -78,3 +78,9 @@ export const STATUS = {
   RUNNING: 'running',
   PAUSED: 'paused',
 };
+
+export const getRandomAdjacentNode = (node) => {
+  const choices = matrixAdjacency[node].filter(Boolean);
+  const selected = choices[Math.floor(Math.random() * choices.length)];
+  return matrixAdjacency[node].indexOf(selected);
+};
