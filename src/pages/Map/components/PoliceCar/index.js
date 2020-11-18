@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Car } from './styles';
+
 import policeCarImage from '~/assets/images/police.png';
+import AlarmImage from '~/assets/images/alarm.png';
+
+import { Car, CarContainer, Alarm } from './styles';
 import { matrixAdjacency, coordinates } from '../../util';
 
 const PoliceCar = ({ status, onChangeNode, route, onChangeRoute }) => {
@@ -11,15 +14,16 @@ const PoliceCar = ({ status, onChangeNode, route, onChangeRoute }) => {
   const nextStep = () => {
     let nextNode;
     if (route.length) {
-      nextNode = route.pop();
+      if (coordinates[route[0]].x === to.x && coordinates[route[0]].y === to.y)
+        // Skip next node if equal to last (It happen when start route)
+        route.shift();
+      nextNode = route.shift();
       onChangeRoute(route);
     } else {
       const choices = matrixAdjacency[node].filter(Boolean);
-      const random = Math.floor(Math.random() * choices.length);
-      const selected = choices[random];
+      const selected = choices[Math.floor(Math.random() * choices.length)];
       nextNode = matrixAdjacency[node].indexOf(selected);
     }
-
     onChangeNode(nextNode);
     setNode(nextNode);
     setFrom(to);
@@ -27,14 +31,14 @@ const PoliceCar = ({ status, onChangeNode, route, onChangeRoute }) => {
   };
 
   return (
-    <Car
+    <CarContainer
       onAnimationEnd={() => nextStep()}
-      src={policeCarImage}
       to={to}
       from={from}
-      status={status}
-      onRoute={!!route.length}
-    />
+      status={status}>
+      {!!route.length && <Alarm src={AlarmImage} />}
+      <Car src={policeCarImage} />
+    </CarContainer>
   );
 };
 

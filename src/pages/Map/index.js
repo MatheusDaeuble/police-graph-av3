@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import dijkstra from './dijkstra';
-import { Background, Container, Map, Point } from './styles';
-import PoliceCar from './components/PoliceCar';
-import mapImage from '~/assets/images/map.jpeg';
 
+import mapImage from '~/assets/images/map.jpeg';
+import { NUMBERS_OF_CARS } from '~/settings';
+
+import PoliceCar from './components/PoliceCar';
+import { Background, Container, Map, Point } from './styles';
+import dijkstra from './dijkstra';
 import { coordinates, STATUS } from './util';
 
 const MapPage = () => {
@@ -25,7 +27,7 @@ const MapPage = () => {
           best = { ...result, key: Number(key) };
         }
       });
-      setEventRoute(best.nodes.reverse().slice(0, best.nodes.length - 1));
+      setEventRoute(best.nodes);
       setCarOnRoute(best.key);
     }
     toggleStatus();
@@ -41,7 +43,7 @@ const MapPage = () => {
     ));
 
   const renderCars = () =>
-    [...Array(3)].map((_, key) => (
+    [...Array(NUMBERS_OF_CARS)].map((_, key) => (
       <PoliceCar
         status={status}
         route={eventRoute.length && carOnRoute === key ? eventRoute : []}
