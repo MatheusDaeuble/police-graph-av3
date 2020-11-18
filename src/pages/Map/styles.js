@@ -35,6 +35,5 @@ export const Point = styled.div`
   border-radius: 10px;
   left: ${({ coordinates }) => `${coordinates.x}px`};
   bottom: ${({ coordinates }) => `${coordinates.y}px`};
-  background-color: ${({ isRoute }) => (isRoute ? 'yellow' : 'red')};
+  background-color: ${({ isRoute }) => (isRoute ? 'red' : 'yellow')};
 `;
-/* background-color: ${({ isActive }) => (isActive ? 'blue' : 'red')}; */
